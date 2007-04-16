@@ -1,0 +1,332 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use App::HWD::Task;
+use App::HWD::Work;
+use Date::Manip;
+
+MAIN: {
+    my $show_nextid;
+    my $show_started;
+    my $show_tasks;
+    my $show_burndown;
+
+    Getopt::Long::Configure( "no_ignore_case" );
+    Getopt::Long::Configure( "bundling" );
+    GetOptions(
+        'nextid'        => \$show_nextid,
+        'started:s'     => \$show_started,
+        'tasks:s'       => \$show_tasks,
+        'burndown'      => \$show_burndown,
+        'h|help|?'      => sub { pod2usage({-verbose => 1}); exit; },
+        'H|man'         => sub { pod2usage({-verbose => 2}); exit; },
+        'V|version'     => sub { print_version(); exit; },
+    ) or exit 1;
+#die "Must specify input files\n" unless @ARGV;
+
+# XXX the --started and --tasks options with no argument eats the filename.
+# Attempt to compensate.
+    for my $var ($show_started, $show_tasks) {
+        if ($var and -e $var) {
+            unshift @ARGV, $var;
+            $var = '';
+        }
+    }
+
+    my ($tasks,$works,$tasks_by_id) = get_tasks_and_work();
+
+    if ( $show_nextid ) {
+        my $max = (sort {$a <=> $b} keys %$tasks_by_id )[-1];
+        $max = $max ? $max+1 : 101;
+        print "Next task ID: $max\n";
+        exit;
+    }
+
+    for my $work ( @$works ) {
+        my $task = $tasks_by_id->{ $work->task }
+            or die "No task ID ", $work->task, "\n";
+        $task->add_work( $work );
+    }
+
+    my $show_full_dump = 1;
+    if ( defined $show_tasks ) {
+        show_tasks( $show_tasks, $tasks, $works, $tasks_by_id );
+        $show_full_dump = 0;
+    }
+
+    if ( $show_burndown ) {
+        show_burndown( $tasks, $works, $tasks_by_id );
+        $show_full_dump = 0;
+    }
+
+    if ( defined $show_started ) {
+        show_started( $show_started, $tasks, $works, $tasks_by_id );
+        $show_full_dump = 0;
+    }
+
+    if ( $show_full_dump ) {
+        my $total_estimated = 0;
+        my $total_velocity = 0;
+        for my $task ( @$tasks ) {
+            $total_estimated += $task->estimate || 0;
+            $total_velocity += $task->estimate if $task->completed;
+            print_task( $task );
+        }
+        print "Total points: $total_estimated\n";
+        print "Total velocity: $total_velocity\n";
+    }
+}
+
+sub show_started {
+    my ( $who, $tasks, $works, $tasks_by_id ) = @_;
+
+    my %started;
+    foreach my $w (@$works) {
+        next if $who and $who ne $w->who;
+        my $t = $tasks_by_id->{$w->task};
+        if ( !$t->completed() ) {
+            $started{$w->who}{$t->id}++;
+        }
+    }
+    my $total_points = 0;
+    foreach my $w (sort keys %started) {
+        print "$w is working on...\n";
+        my $points = 0;
+        foreach my $key (sort { $a <=> $b } keys %{$started{$w}}) {
+            my $task = $tasks_by_id->{$key};
+            print "  " . $task->summary . "\n";
+            $points += $task->estimate;
+        }
+        print "$w has $points points open\n";
+        print "\n";
+        $total_points += $points;
+    }
+    print "$total_points points open on the project\n";
+} # show_started
+
+
+sub show_tasks {
+    my ( $who, $tasks, $works, $tasks_by_id ) = @_;
+
+    my %worker;
+    foreach my $t (@$tasks) {
+        foreach my $w ($t->work) {
+            $worker{ $w->who }{$t->id}++;
+        }
+    }
+
+    my @who = $who ? ($who) : keys %worker;
+    foreach my $w (@who) {
+        if ( !$worker{$w} ) {
+            print "$w has no tasks!\n";
+            next;
+        }
+        print "$w worked on:\n";
+        foreach my $id (keys %{$worker{$w}}) {
+            my $task = $tasks_by_id->{$id};
+            print "  ", $task->summary, "\n";
+        }
+        print "\n";
+    }
+} # show_tasks
+
+
+sub show_burndown {
+    my ( $tasks, $works, $tasks_by_id ) = @_;
+
+    my %day;
+
+    # ASSUMPTION: projects will finish before Jan 1, 2100
+    my $earliest = ParseDate("2100/1/1"); 
+
+    # determine the earliest date work has been done and keep track
+    # of finished task points
+    foreach my $w (@$works) {
+        my $date = ParseDate($w->when);
+        die "Work " . $w->task . " has an invalid date:" . $w->when 
+            unless $date;
+        if ($date and Date_Cmp($date, $earliest) < 0) {
+            $earliest = $date;
+        }
+        next unless $w->completed;
+        my $est = $tasks_by_id->{ $w->task }->estimate;
+        $day{$date}{finished} += $est;
+    }
+
+    # determine the total for each date
+    foreach my $t (@$tasks) {
+        my $date = ParseDate( $t->date_added ) || $earliest;
+        die "Task " . $t->name . " has no date!" unless $date;
+        $day{$date}{total} += $t->estimate;
+    }
+
+    # Print the running task and finished totals
+    my $total;
+    my $finished;
+    my $format = "\%10s\t\%-5s\t\%-s\n";
+    printf $format, qw(YYYY/MM/DD Total Todo);
+    foreach my $date (sort keys %day) {
+        $total += $day{$date}{total} || 0;
+        $finished += $day{$date}{finished} || 0;
+        $date =~ s#^(\d{4})(\d\d)(\d\d).+#$1/$2/$3#;
+        die "Invalid date ($date)" unless $date;
+        printf $format, $date, $total, $total - $finished;
+    }
+}
+
+sub get_tasks_and_work {
+    my @tasks;
+    my @work;
+    my %tasks_by_id;
+
+    while ( my $line = <> ) {
+        chomp $line;
+        next if $line =~ /^\s*#/;
+        next if $line !~ /./;
+
+        if ( $line =~ /^-/ ) {
+            my $task = App::HWD::Task->parse( $line );
+            die "Can't parse: $line\n" unless $task;
+            if ( $task->id ) {
+                if ( $tasks_by_id{ $task->id } ) {
+                    die "Dupe task ID ", $task->id, "\n";
+                }
+                else {
+                    $tasks_by_id{ $task->id } = $task;
+                }
+            }
+            push( @tasks, $task );
+        }
+        else {
+            my $work = App::HWD::Work->parse( $line );
+            push( @work, $work );
+        }
+    } # while
+    return( \@tasks, \@work, \%tasks_by_id );
+}
+
+sub print_version {
+    printf( "hwd v%s\n", $App::HWD::VERSION, $^V );
+}
+
+sub print_task {
+    my $task = shift;
+
+    my $level = $task->level;
+    my $name = $task->name;
+    my $id = $task->id;
+    my $estimate = $task->estimate;
+    my $indent = " " x (($level-1)*4);
+
+    if ( $id ) {
+        my $worked = $task->hours_worked;
+        $worked = $worked ? sprintf( "%6.2f", $worked ) : "";
+        $worked =~ s/\.00$/   /;
+        my $x = $task->completed ? "X" : " ";
+        print_cols( $id, $estimate, $worked, $x, $indent, $name );
+    }
+    else {
+        print_cols( (undef) x 4, $indent, $name );
+    }
+}
+
+sub print_cols {
+    my @cols = @_;
+
+    for ( @cols[0..1] ) {
+        $_ = $_ ? sprintf( "%4d", $_ ) : "";
+    }
+    for ( @cols[2..5] ) {
+        $_ = "" unless defined $_;
+    }
+    printf( "%4s %4s %6.6s %1s %s %s\n", @cols );
+}
+
+__END__
+
+=head1 NAME
+
+hwd -- The How We Doin'? project tracking tool
+
+=head1 SYNOPSIS
+
+hwd [options] schedule-file(s)
+
+Options:
+
+        --nextid    Display the next highest task ID
+        --started   Displays tasks that have been started
+        --started=person
+                    Displays tasks started by person
+        --tasks     Displays tasks sorted by person
+        --tasks[=person]
+                    Displays tasks for a given user
+        --burndown  Display a burn-down table
+
+    -h, --help      Display this help
+    -H, --man       Longer manpage for prove
+    -V, --version   Display version info
+
+=head1 COMMAND LINE OPTIONS
+
+=head2 --started[=who]
+
+Shows what tasks have been started by the person specified, or by everyone
+if no one one is specified.
+
+    Ape is working on...
+      104 - Add FK constraints between FOOHEAD and BARDETAIL (2/2)
+
+    Chimp is working on...
+      107 - Refactor (1/1)
+
+=head2 --tasks[=person]
+
+Shows the list of tasks and their status sorted by user.  If a person is
+specified, only the tasks for that person will be shown.
+
+=head2 --nextid
+
+Shows the next ID available.
+
+=head2 --burndown
+
+Print a "burn down" graph:
+
+    YYYY/MM/DD      Total   Todo
+    2005/07/15      100     98
+    2005/07/17      100     77
+    2005/07/18      100     75
+    2005/07/19      100     70
+
+That is, how fast is the amount of work left "burning down" to zero?
+
+=head2 -V, --version
+
+Display version info.
+
+=head1 BUGS
+
+Please use the CPAN bug ticketing system at L<http://rt.cpan.org/>.
+You can also mail bugs, fixes and enhancements to 
+C<< <bug-app-hwd at rt.cpan.org> >>.
+
+=head1 AUTHORS
+
+Andy Lester C<< <andy at petdance.com> >>
+
+=head1 COPYRIGHT
+
+Copyright 2005 by Andy Lester C<< <andy at petdance.com> >>.
+
+This program is free software; you can redistribute it and/or 
+modify it under the same terms as Perl itself.
+
+See L<http://www.perl.com/perl/misc/Artistic.html>.
+
+=cut
+
+# vim: expandtab
