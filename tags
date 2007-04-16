@@ -1,0 +1,72 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+COMPLETED	t/work.t	/^COMPLETED: {$/;"	l
+Getopt	bin/hwd	/^    Getopt::Long::Configure( "bundling" );$/;"	l
+Getopt	bin/hwd	/^    Getopt::Long::Configure( "no_ignore_case" );$/;"	l
+MAIN	bin/hwd	/^MAIN: {$/;"	l
+NEXTID_OPTION	t/hwd.t	/^NEXTID_OPTION: {$/;"	l
+ONE_USER	t/started.t	/^ONE_USER: { # Test for only one user$/;"	l
+SIMPLE	t/started.t	/^SIMPLE: { # Test using the simple example$/;"	l
+SIMPLE	t/task.t	/^SIMPLE: {$/;"	l
+SIMPLE	t/work.t	/^SIMPLE: {$/;"	l
+TASKS_OPTION	t/hwd.t	/^TASKS_OPTION: {$/;"	l
+TOTAL_ESTIMATE	t/task-subtasks.t	/^TOTAL_ESTIMATE: {$/;"	l
+UNDELETED_ESTIMATE	t/task-subtasks.t	/^UNDELETED_ESTIMATE: {$/;"	l
+USER_TASKS_OPTION	t/hwd.t	/^USER_TASKS_OPTION: {$/;"	l
+WITH_DELETION	t/task.t	/^WITH_DELETION: {$/;"	l
+WITH_ESTIMATE	t/task.t	/^WITH_ESTIMATE: {$/;"	l
+WITH_ESTIMATE_AND_ID	t/task.t	/^WITH_ESTIMATE_AND_ID: {$/;"	l
+WITH_FRACTIONAL_ESTIMATE	t/task.t	/^WITH_FRACTIONAL_ESTIMATE: {$/;"	l
+WITH_ID	t/task.t	/^WITH_ID: {$/;"	l
+WITH_ID_AND_ESTIMATE	t/task.t	/^WITH_ID_AND_ESTIMATE: {$/;"	l
+WITH_ID_AND_ESTIMATE_AND_DATE	t/task.t	/^WITH_ID_AND_ESTIMATE_AND_DATE: {$/;"	l
+WITH_PARENS	t/task.t	/^WITH_PARENS: {$/;"	l
+add_child	Task.pm	/^sub add_child {$/;"	s
+add_notes	Task.pm	/^sub add_notes {$/;"	s
+add_work	Task.pm	/^sub add_work {$/;"	s
+children	Task.pm	/^sub children            { return @{shift->{children}||[]} }$/;"	s
+comment	Work.pm	/^sub comment     { return shift->{comment} }$/;"	s
+completed	Task.pm	/^sub completed {$/;"	s
+completed	Work.pm	/^sub completed   { return shift->{completed} || 0 }$/;"	s
+date_added	Task.pm	/^sub date_added {$/;"	s
+date_added_obj	Task.pm	/^sub date_added_obj      { return shift->{date_added_obj} }$/;"	s
+date_deleted	Task.pm	/^sub date_deleted {$/;"	s
+date_deleted_obj	Task.pm	/^sub date_deleted_obj    { return shift->{date_added_obj} }$/;"	s
+estimate	Task.pm	/^sub estimate            { return shift->{estimate} || 0 }$/;"	s
+fractiony	bin/hwd	/^sub fractiony {$/;"	s
+get_tasks_and_work	HWD.pm	/^sub get_tasks_and_work {$/;"	s
+hours	Work.pm	/^sub hours       { return shift->{hours} }$/;"	s
+hours_worked	Task.pm	/^sub hours_worked {$/;"	s
+id	Task.pm	/^sub id                  { return shift->{id} || "" }$/;"	s
+is_todo	Task.pm	/^sub is_todo {$/;"	s
+level	Task.pm	/^sub level               { return shift->{level} }$/;"	s
+name	Task.pm	/^sub name                { return shift->{name} }$/;"	s
+new	Task.pm	/^sub new {$/;"	s
+new	Work.pm	/^sub new {$/;"	s
+notes	Task.pm	/^sub notes               { return @{shift->{notes}||[]} }$/;"	s
+parent	Task.pm	/^sub parent              { return shift->{parent} }$/;"	s
+parse	Task.pm	/^sub parse {$/;"	s
+parse	Work.pm	/^sub parse {$/;"	s
+print_cols	bin/hwd	/^sub print_cols {$/;"	s
+print_task	bin/hwd	/^sub print_task {$/;"	s
+print_version	bin/hwd	/^sub print_version {$/;"	s
+set	Task.pm	/^sub set {$/;"	s
+set	Work.pm	/^sub set {$/;"	s
+show_burndown	bin/hwd	/^sub show_burndown {$/;"	s
+show_full_dump	bin/hwd	/^sub show_full_dump {$/;"	s
+show_started	bin/hwd	/^sub show_started {$/;"	s
+show_tasks	bin/hwd	/^sub show_tasks {$/;"	s
+show_totals	bin/hwd	/^sub show_totals {$/;"	s
+sort_work	Task.pm	/^sub sort_work {$/;"	s
+started	Task.pm	/^sub started {$/;"	s
+subtask_walk	Task.pm	/^sub subtask_walk {$/;"	s
+summary	Task.pm	/^sub summary {$/;"	s
+task	Work.pm	/^sub task        { return shift->{task} }$/;"	s
+when	Work.pm	/^sub when {$/;"	s
+when_obj	Work.pm	/^sub when_obj    { return shift->{when} }$/;"	s
+who	Work.pm	/^sub who         { return shift->{who} }$/;"	s
+work	Task.pm	/^sub work                { return @{shift->{work}||[]} }$/;"	s
