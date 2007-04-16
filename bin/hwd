@@ -1,0 +1,168 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use App::HWD::Task;
+use App::HWD::Work;
+use List::Util qw( max );
+
+our $detail_level;
+
+our $show_nextid;
+
+Getopt::Long::Configure( "no_ignore_case" );
+Getopt::Long::Configure( "bundling" );
+GetOptions(
+    'detail=n'      => \$detail_level,
+    nextid          => \$show_nextid,
+    started         => \$show_tasks_started,
+    'h|help|?'      => sub {pod2usage({-verbose => 1}); exit},
+    'H|man'         => sub {pod2usage({-verbose => 2}); exit},
+    'V|version'     => sub { print_version(); exit; },
+) or exit 1;
+
+MAIN: {
+    my ($tasks,$works,$tasks_by_id) = get_tasks_and_work();
+
+    if ( $show_nextid ) {
+        my $max = max( keys %$tasks_by_id );
+        $max = $max ? $max+1 : 101;
+        print "Next task ID: $max\n";
+        exit;
+    }
+
+    for my $work ( @$works ) {
+        my $task = $tasks_by_id->{ $work->task } or die "No task ID ", $work->task, "\n";
+        $task->add_work( $work );
+    }
+
+    my $total_estimated = 0;
+    my $total_velocity = 0;
+    for my $task ( @$tasks ) {
+        $total_estimated += $task->estimate || 0;
+        $total_velocity += $task->estimate if $task->completed;
+        print_task( $task );
+    }
+    print "Total points: $total_estimated\n";
+    print "Total velocity: $total_velocity\n";
+}
+
+sub get_tasks_and_work {
+    my @tasks;
+    my @work;
+    my %tasks_by_id;
+
+    while ( my $line = <> ) {
+        chomp $line;
+        next if $line =~ /^\s*#/;
+        next if $line !~ /./;
+
+        if ( $line =~ /^-/ ) {
+            my $task = App::HWD::Task->parse( $line );
+            die "Can't parse: $line\n" unless $task;
+            if ( $task->id ) {
+                if ( $tasks_by_id{ $task->id } ) {
+                    die "Dupe task ID ", $task->id, "\n";
+                }
+                else {
+                    $tasks_by_id{ $task->id } = $task;
+                }
+            }
+            push( @tasks, $task );
+        }
+        else {
+            my $work = App::HWD::Work->parse( $line );
+            push( @work, $work );
+        }
+    } # while
+    return( \@tasks, \@work, \%tasks_by_id );
+}
+
+sub print_version {
+    printf( "hwd v%s\n", $App::HWD::VERSION, $^V );
+}
+
+sub print_task {
+    my $task = shift;
+
+    my $level = $task->level;
+    my $name = $task->name;
+    my $id = $task->id;
+    my $estimate = $task->estimate;
+    my $indent = " " x (($level-1)*4);
+
+    if ( $id ) {
+        if ( !$detail_level ) {
+            my $worked = $task->hours_worked;
+            $worked = $worked ? sprintf( "%6.2f", $worked ) : "";
+            $worked =~ s/\.00$/   /;
+            my $x = $task->completed ? "X" : " ";
+            print_cols( $id, $estimate, $worked, $x, $indent, $name );
+        }
+    }
+    else {
+        print_cols( (undef) x 4, $indent, $name );
+    }
+}
+
+sub print_cols {
+    my @cols = @_;
+
+    for ( @cols[0..1] ) {
+        $_ = $_ ? sprintf( "%4d", $_ ) : "";
+    }
+    for ( @cols[2..5] ) {
+        $_ = "" unless defined $_;
+    }
+    printf( "%4s %4s %6.6s %1s %s %s\n", @cols );
+}
+
+__END__
+
+=head1 NAME
+
+hwd -- The How We Doin'? project tracking tool
+
+=head1 SYNOPSIS
+
+hwd [options] schedule-file(s)
+
+Options:
+        --nextid    Display the next highest task ID
+
+    -h, --help      Display this help
+    -H, --man       Longer manpage for prove
+    -V, --version   Display version info
+
+=head1 COMMAND LINE OPTIONS
+
+=head2 --nextid
+
+Shows the next ID available.
+
+=head2 -V, --version
+
+Display version info.
+
+=head1 BUGS
+
+Please use the CPAN bug ticketing system at L<http://rt.cpan.org/>.
+You can also mail bugs, fixes and enhancements to 
+C<< <bug-app-hwd at rt.cpan.org> >>.
+
+=head1 AUTHORS
+
+Andy Lester C<< <andy at petdance.com> >>
+
+=head1 COPYRIGHT
+
+Copyright 2005 by Andy Lester C<< <andy at petdance.com> >>.
+
+This program is free software; you can redistribute it and/or 
+modify it under the same terms as Perl itself.
+
+See L<http://www.perl.com/perl/misc/Artistic.html>.
+
+=cut

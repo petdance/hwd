@@ -1,0 +1,12 @@
+Revision history for App-HWD
+
+0.02    Mon Aug  1 14:32:29 PDT 2005
+        [FIXES]
+        * Fixes silly syntax bummers.
+
+        [ENHANCEMENTS]
+        * Added --nextid
+
+0.01
+        First version, released on an unsuspecting world.
+
