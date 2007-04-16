@@ -1,0 +1,17 @@
+Revision history for App-HWD
+
+0.04    Tue Aug  2 15:47:23 CDT 2005
+        [ENHANCEMENTS]
+        * Added --started feature.  Thanks to Neil Watkiss and Luke
+          Closs from Sophos.
+
+0.02    Mon Aug  1 14:32:29 PDT 2005
+        [FIXES]
+        * Fixes silly syntax bummers.
+
+        [ENHANCEMENTS]
+        * Added --nextid
+
+0.01
+        First version, released on an unsuspecting world.
+
