@@ -1,0 +1,110 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+COMPLETED	t/work.t	/^COMPLETED: {$/;"	l
+Getopt	bin/hwd	/^    Getopt::Long::Configure( "bundling" );$/;"	l
+Getopt	bin/hwd	/^    Getopt::Long::Configure( "no_ignore_case" );$/;"	l
+Getopt	blib/script/hwd	/^    Getopt::Long::Configure( "bundling" );$/;"	l
+Getopt	blib/script/hwd	/^    Getopt::Long::Configure( "no_ignore_case" );$/;"	l
+MAIN	bin/hwd	/^MAIN: {$/;"	l
+MAIN	blib/script/hwd	/^MAIN: {$/;"	l
+NEXTID_OPTION	t/hwd.t	/^NEXTID_OPTION: {$/;"	l
+ONE_USER	t/started.t	/^ONE_USER: { # Test for only one user$/;"	l
+SIMPLE	t/started.t	/^SIMPLE: { # Test using the simple example$/;"	l
+SIMPLE	t/task.t	/^SIMPLE: {$/;"	l
+SIMPLE	t/work.t	/^SIMPLE: {$/;"	l
+TASKS_OPTION	t/hwd.t	/^TASKS_OPTION: {$/;"	l
+USER_TASKS_OPTION	t/hwd.t	/^USER_TASKS_OPTION: {$/;"	l
+WITH_DELETION	t/task.t	/^WITH_DELETION: {$/;"	l
+WITH_ESTIMATE	t/task.t	/^WITH_ESTIMATE: {$/;"	l
+WITH_ESTIMATE_AND_ID	t/task.t	/^WITH_ESTIMATE_AND_ID: {$/;"	l
+WITH_FRACTIONAL_ESTIMATE	t/task.t	/^WITH_FRACTIONAL_ESTIMATE: {$/;"	l
+WITH_ID	t/task.t	/^WITH_ID: {$/;"	l
+WITH_ID_AND_ESTIMATE	t/task.t	/^WITH_ID_AND_ESTIMATE: {$/;"	l
+WITH_ID_AND_ESTIMATE_AND_DATE	t/task.t	/^WITH_ID_AND_ESTIMATE_AND_DATE: {$/;"	l
+WITH_PARENS	t/task.t	/^WITH_PARENS: {$/;"	l
+add_notes	Task.pm	/^sub add_notes {$/;"	s
+add_notes	blib/lib/App/HWD/Task.pm	/^sub add_notes {$/;"	s
+add_work	Task.pm	/^sub add_work {$/;"	s
+add_work	blib/lib/App/HWD/Task.pm	/^sub add_work {$/;"	s
+comment	Work.pm	/^sub comment     { return shift->{comment} }$/;"	s
+comment	blib/lib/App/HWD/Work.pm	/^sub comment     { return shift->{comment} }$/;"	s
+completed	Task.pm	/^sub completed {$/;"	s
+completed	Work.pm	/^sub completed   { return shift->{completed} || 0 }$/;"	s
+completed	blib/lib/App/HWD/Task.pm	/^sub completed {$/;"	s
+completed	blib/lib/App/HWD/Work.pm	/^sub completed   { return shift->{completed} || 0 }$/;"	s
+date_added	Task.pm	/^sub date_added {$/;"	s
+date_added	blib/lib/App/HWD/Task.pm	/^sub date_added {$/;"	s
+date_added_obj	Task.pm	/^sub date_added_obj      { return shift->{date_added_obj} }$/;"	s
+date_added_obj	blib/lib/App/HWD/Task.pm	/^sub date_added_obj      { return shift->{date_added_obj} }$/;"	s
+date_deleted	Task.pm	/^sub date_deleted {$/;"	s
+date_deleted	blib/lib/App/HWD/Task.pm	/^sub date_deleted {$/;"	s
+date_deleted_obj	Task.pm	/^sub date_deleted_obj    { return shift->{date_added_obj} }$/;"	s
+date_deleted_obj	blib/lib/App/HWD/Task.pm	/^sub date_deleted_obj    { return shift->{date_added_obj} }$/;"	s
+estimate	Task.pm	/^sub estimate            { return shift->{estimate} || 0 }$/;"	s
+estimate	blib/lib/App/HWD/Task.pm	/^sub estimate            { return shift->{estimate} || 0 }$/;"	s
+fractiony	bin/hwd	/^sub fractiony {$/;"	s
+fractiony	blib/script/hwd	/^sub fractiony {$/;"	s
+get_tasks_and_work	bin/hwd	/^sub get_tasks_and_work {$/;"	s
+get_tasks_and_work	blib/script/hwd	/^sub get_tasks_and_work {$/;"	s
+hours	Work.pm	/^sub hours       { return shift->{hours} }$/;"	s
+hours	blib/lib/App/HWD/Work.pm	/^sub hours       { return shift->{hours} }$/;"	s
+hours_worked	Task.pm	/^sub hours_worked {$/;"	s
+hours_worked	blib/lib/App/HWD/Task.pm	/^sub hours_worked {$/;"	s
+id	Task.pm	/^sub id                  { return shift->{id} || "" }$/;"	s
+id	blib/lib/App/HWD/Task.pm	/^sub id                  { return shift->{id} || "" }$/;"	s
+is_todo	Task.pm	/^sub is_todo {$/;"	s
+is_todo	blib/lib/App/HWD/Task.pm	/^sub is_todo {$/;"	s
+level	Task.pm	/^sub level               { return shift->{level} }$/;"	s
+level	blib/lib/App/HWD/Task.pm	/^sub level               { return shift->{level} }$/;"	s
+name	Task.pm	/^sub name                { return shift->{name} }$/;"	s
+name	blib/lib/App/HWD/Task.pm	/^sub name                { return shift->{name} }$/;"	s
+new	Task.pm	/^sub new {$/;"	s
+new	Work.pm	/^sub new {$/;"	s
+new	blib/lib/App/HWD/Task.pm	/^sub new {$/;"	s
+new	blib/lib/App/HWD/Work.pm	/^sub new {$/;"	s
+notes	Task.pm	/^sub notes               { return @{shift->{notes}||[]} }$/;"	s
+notes	blib/lib/App/HWD/Task.pm	/^sub notes               { return @{shift->{notes}||[]} }$/;"	s
+parse	Task.pm	/^sub parse {$/;"	s
+parse	Work.pm	/^sub parse {$/;"	s
+parse	blib/lib/App/HWD/Task.pm	/^sub parse {$/;"	s
+parse	blib/lib/App/HWD/Work.pm	/^sub parse {$/;"	s
+print_cols	bin/hwd	/^sub print_cols {$/;"	s
+print_cols	blib/script/hwd	/^sub print_cols {$/;"	s
+print_task	bin/hwd	/^sub print_task {$/;"	s
+print_task	blib/script/hwd	/^sub print_task {$/;"	s
+print_version	bin/hwd	/^sub print_version {$/;"	s
+print_version	blib/script/hwd	/^sub print_version {$/;"	s
+set	Task.pm	/^sub set {$/;"	s
+set	Work.pm	/^sub set {$/;"	s
+set	blib/lib/App/HWD/Task.pm	/^sub set {$/;"	s
+set	blib/lib/App/HWD/Work.pm	/^sub set {$/;"	s
+show_burndown	bin/hwd	/^sub show_burndown {$/;"	s
+show_burndown	blib/script/hwd	/^sub show_burndown {$/;"	s
+show_full_dump	bin/hwd	/^sub show_full_dump {$/;"	s
+show_full_dump	blib/script/hwd	/^sub show_full_dump {$/;"	s
+show_started	bin/hwd	/^sub show_started {$/;"	s
+show_started	blib/script/hwd	/^sub show_started {$/;"	s
+show_tasks	bin/hwd	/^sub show_tasks {$/;"	s
+show_tasks	blib/script/hwd	/^sub show_tasks {$/;"	s
+show_totals	bin/hwd	/^sub show_totals {$/;"	s
+show_totals	blib/script/hwd	/^sub show_totals {$/;"	s
+sort_work	Task.pm	/^sub sort_work {$/;"	s
+sort_work	blib/lib/App/HWD/Task.pm	/^sub sort_work {$/;"	s
+started	Task.pm	/^sub started {$/;"	s
+started	blib/lib/App/HWD/Task.pm	/^sub started {$/;"	s
+summary	Task.pm	/^sub summary {$/;"	s
+summary	blib/lib/App/HWD/Task.pm	/^sub summary {$/;"	s
+task	Work.pm	/^sub task        { return shift->{task} }$/;"	s
+task	blib/lib/App/HWD/Work.pm	/^sub task        { return shift->{task} }$/;"	s
+when	Work.pm	/^sub when {$/;"	s
+when	blib/lib/App/HWD/Work.pm	/^sub when {$/;"	s
+when_obj	Work.pm	/^sub when_obj    { return shift->{when} }$/;"	s
+when_obj	blib/lib/App/HWD/Work.pm	/^sub when_obj    { return shift->{when} }$/;"	s
+who	Work.pm	/^sub who         { return shift->{who} }$/;"	s
+who	blib/lib/App/HWD/Work.pm	/^sub who         { return shift->{who} }$/;"	s
+work	Task.pm	/^sub work                { return @{shift->{work}} }$/;"	s
+work	blib/lib/App/HWD/Task.pm	/^sub work                { return @{shift->{work}} }$/;"	s
