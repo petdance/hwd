@@ -8,7 +8,7 @@ WriteMakefile(
     VERSION_FROM        => 'HWD.pm',
     ABSTRACT            => "How We Doin'?, the project estimation and tracking tool",
     PL_FILES            => {},
-    EXE_FILES           => [ 'bin/hwd', 'bin/hwd-burnchart' ],
+    EXE_FILES           => [ 'bin/hwd' ],
     PM => {
         'HWD.pm' => '$(INST_LIBDIR)/App/HWD.pm',
         'Task.pm' => '$(INST_LIBDIR)/App/HWD/Task.pm',

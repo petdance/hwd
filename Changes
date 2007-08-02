@@ -1,5 +1,9 @@
 Revision history for hwd
 
+        * Remove out non-functioning burndown/burnchart code
+          (Ask Bjoern Hansen)
+
+
 0.21_01 Mon May 29 14:43:33 PDT 2006
         [ENHANCEMENTS]
         * Added support for assignees for tasks.

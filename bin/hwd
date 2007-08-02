@@ -21,7 +21,6 @@ MAIN: {
     my $show_nextid;
     my $show_started;
     my $show_tasks;
-    my $show_burndown;
     my $show_todo;
     my $csv;
     my $notes = 1;
@@ -34,7 +33,6 @@ MAIN: {
         'todo'          => \$show_todo,
         'started:s'     => \$show_started,
         'tasks:s'       => \$show_tasks,
-        'burndown'      => \$show_burndown,
         'wrap:i'        => \$wrap,
         'csv!'          => \$csv,
         'notes!'        => \$notes,
@@ -77,11 +75,6 @@ MAIN: {
 
     if ( defined $show_tasks ) {
         show_tasks( $show_tasks, $tasks, $works, $tasks_by_id );
-        $show_full_dump = 0;
-    }
-
-    if ( $show_burndown ) {
-        show_burndown( $tasks, $works, $tasks_by_id );
         $show_full_dump = 0;
     }
 
@@ -293,52 +286,6 @@ sub show_tasks {
     }
 } # show_tasks
 
-
-sub show_burndown {
-    my ( $tasks, $works, $tasks_by_id ) = @_;
-
-    my %day;
-
-    # ASSUMPTION: projects will finish before Jan 1, 2100
-    my $earliest = ParseDate("2100/1/1"); 
-
-    # determine the earliest date work has been done and keep track
-    # of finished task points
-    foreach my $w (@$works) {
-        my $date = ParseDate($w->when)
-            or die "Work " . $w->task . " has an invalid date: " . $w->when;
-        if (Date_Cmp($date, $earliest) < 0) {
-            $earliest = $date;
-        }
-        if ( $w->completed ) {
-            my $est = $tasks_by_id->{ $w->task }->estimate;
-            $day{$date}{finished} += $est;
-        }
-    }
-
-    # determine the total for each date
-    foreach my $t (@$tasks) {
-        next if $t->date_deleted;
-        my $date = ParseDate( $t->date_added ) || $earliest;
-        if ( !$date ) {
-            die "Task " . $t->name . " has no date!";
-        }
-        $day{$date}{total} += $t->estimate;
-    }
-
-    # Print the running task and finished totals
-    my $total;
-    my $finished;
-    my $format = "\%10s\t\%-5s\t\%-s\n";
-    printf $format, qw(YYYY/MM/DD Total Todo);
-    foreach my $date (sort keys %day) {
-        $total += $day{$date}{total} || 0;
-        $finished += $day{$date}{finished} || 0;
-        $date =~ s#^(\d{4})(\d\d)(\d\d).+#$1/$2/$3#
-            or die "Invalid date ($date)";
-        printf $format, $date, $total, $total - $finished;
-    }
-}
 
 sub show_totals_by_assignee {
     my $tasks = shift;
