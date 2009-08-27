@@ -19,6 +19,8 @@ use warnings;
 use strict;
 use DateTime::Format::Strptime;
 
+use Moose;
+
 =head2 App::HWD::Task->new( { args } )
 
 Creates a new task from the args passed in.  They should include at
