@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+# If it already has a number on it, or it does NOT have a number but it
+# has an estimate, it will get assigned a number.  If you have done work
+# in the HWD, it will translate the numbers on the work, too.
+
+my $newtaskid = 101;
+
+my %translation;
+while (my $line = <>) {
+    next if /^#/;
+    if ($line =~ /^-.*\((?:[^()],)*\s*#(\d+)(?:,[^()]*)*\s*\)\s*(?:#.*)?$/) {
+        my $task = $1;
+        do { print $line; next } if $task > 9000;
+        die "Bad task number" unless $task;
+        $translation{$task} = $newtaskid;
+        $line =~ s/#$task/#$newtaskid/;
+        $newtaskid++;
+    } elsif ($line =~ /^-.*\((\s*\d*(?:\.\d*)?h\s*)\)/) {
+        my $match = $1;
+        $line =~ s/\($match/\(#$newtaskid, $match/;
+        $newtaskid++;
+    } elsif ($line =~ /^\w/) {
+        if ($line !~ /-\d\d\s*\^/) {
+            $line =~ s/(-\d\d\s*)(\d+)/$1.$translation{$2}/e || die "Translation not found: $line";
+        }
+    }
+    print $line;
+}
